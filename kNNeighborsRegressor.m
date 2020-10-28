@@ -26,7 +26,8 @@ methods
     end
     function obj = fit(obj,X,Y)
         obj.X = X;
-        obj.Y = Y;
+        obj.Y = Y(:); % Column vector
+        if obj.k < 2, obj.Y = Y(:)'; end % Row vector
     end
     function Ypred = predict(obj,Xnew)
         distances = pdist2(obj.X,Xnew,obj.metric); % Euclidean distances matrix
@@ -37,7 +38,7 @@ methods
         elseif strcmp(obj.weights,'distance')
             w = 1./distances(1:obj.k,:); % For weighted mean
         end
-        Ypred = sum(w.*Ynearest)./sum(w);
+        Ypred = sum(w.*Ynearest,1)./sum(w,1);
     end
 end
 end
